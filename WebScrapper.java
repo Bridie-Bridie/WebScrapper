@@ -17,13 +17,13 @@ public class WebScrapper {
     public static void main(String[] args){
         try (final WebClient webClient = new WebClient()) { //initialize the web browser
             webClient.getOptions().setCssEnabled(false); //disable css
-            webClient.getOptions().setJavaScriptEnabled(false); //disable javascript
+            webClient.getOptions().setJavaScriptEnabled(false); //enable javascript
 
-            String url = "https://whats-on-nairobi.com/"; //url to scrape
-            HtmlPage page = webClient.getPage(url);
+            String baseUrl = "https://whats-on-nairobi.com/"; //url to scrape
+            HtmlPage page = webClient.getPage(baseUrl);
 
-            List<HtmlParagraph> paragraphs = page.getByXPath("//p"); //xpath to get <p>
-            List<HtmlImage> images = page.getByXPath("//img");//to get <img>
+            List<HtmlParagraph> paragraphs = page.getByXPath("//p");
+            List<HtmlImage> images = page.getByXPath("//img");
 
             // List to hold structured data for paragraphs and images together
             List<Map<String, String>> structuredData = new ArrayList<>();
@@ -34,13 +34,20 @@ public class WebScrapper {
             for (int i = 0; i < size; i++) {
                 Map<String, String> pair = new HashMap<>();
                 pair.put("paragraph", paragraphs.get(i).asNormalizedText());
-                pair.put("image", images.get(i).getSrcAttribute());
+
+                String urlImage = images.get(i).getSrcAttribute();//the images.get is to extract src from the img tag
+
+                if (!urlImage.startsWith("http")){ //to convert (relative)PICS/quivert_22_09.JPG to (absolute)https://whats-on-nairobi.com//:PICS/quivert_22_09.JPG
+                    urlImage = baseUrl + "/" + urlImage; // the baseUrl is the url of the site we are scrapping
+                }
+
+                pair.put("image", urlImage);//to store image url
 
                 structuredData.add(pair);
             }
 
             // Write structured data to a JSON file
-            ObjectMapper mapper = new ObjectMapper();//\ObjectMapper class converts map into a json format 
+            ObjectMapper mapper = new ObjectMapper();
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File("structuredScrapedData.json"), structuredData);
 
             System.out.println("Data saved to structuredScrapedData.json");
