@@ -19,7 +19,7 @@ public class WebScrapper {
             webClient.getOptions().setCssEnabled(false); //disable css
             webClient.getOptions().setJavaScriptEnabled(false); //enable javascript
 
-            String baseUrl = "https://whats-on-nairobi.com/"; //url to scrape
+            String baseUrl = "https.."; //url to scrape
             HtmlPage page = webClient.getPage(baseUrl);
 
             List<HtmlParagraph> paragraphs = page.getByXPath("//p");
@@ -37,7 +37,7 @@ public class WebScrapper {
 
                 String urlImage = images.get(i).getSrcAttribute();//the images.get is to extract src from the img tag
 
-                if (!urlImage.startsWith("http")){ //to convert (relative)PICS/quivert_22_09.JPG to (absolute)https://whats-on-nairobi.com//:PICS/quivert_22_09.JPG
+                if (!urlImage.startsWith("http")){ //to convert (relative)PICS/09.JPG to (absolute)https:..:PICS/09.JPG
                     urlImage = baseUrl + "/" + urlImage; // the baseUrl is the url of the site we are scrapping
                 }
 
