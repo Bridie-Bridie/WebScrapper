@@ -17,13 +17,13 @@ public class WebScrapper {
     public static void main(String[] args){
         try (final WebClient webClient = new WebClient()) { //initialize the web browser
             webClient.getOptions().setCssEnabled(false); //disable css
-            webClient.getOptions().setJavaScriptEnabled(false); //enable javascript
+            webClient.getOptions().setJavaScriptEnabled(false); //disable javascript
 
             String url = "https://whats-on-nairobi.com/"; //url to scrape
             HtmlPage page = webClient.getPage(url);
 
-            List<HtmlParagraph> paragraphs = page.getByXPath("//p");
-            List<HtmlImage> images = page.getByXPath("//img");
+            List<HtmlParagraph> paragraphs = page.getByXPath("//p"); //xpath to get <p>
+            List<HtmlImage> images = page.getByXPath("//img");//to get <img>
 
             // List to hold structured data for paragraphs and images together
             List<Map<String, String>> structuredData = new ArrayList<>();
@@ -40,7 +40,7 @@ public class WebScrapper {
             }
 
             // Write structured data to a JSON file
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper();//\ObjectMapper class converts map into a json format 
             mapper.writerWithDefaultPrettyPrinter().writeValue(new File("structuredScrapedData.json"), structuredData);
 
             System.out.println("Data saved to structuredScrapedData.json");
